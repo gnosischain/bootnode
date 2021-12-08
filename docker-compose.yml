@@ -1,0 +1,34 @@
+version: '3.8'
+services:
+  prysm_bootnode:
+    container_name: prysm_bootnode
+    image: gcr.io/prysmaticlabs/prysm/bootnode@sha256:399f39103fdc389783c48a67d6a5c1ae0ae2f299bfed6265f6cee1502d646716
+    command: |
+      --private $BOOTNODE_PRIVATE_KEY
+      --fork-version $BOOTNODE_FORK_VERSION
+      --genesis-root $GENESIS_VALIDATORS_ROOT
+      --external-ip $BOOTNODE_PUBLIC_IP
+      --discv5-port 11000
+    ports:
+      - '11000:11000/udp'
+      - '5000:5000'
+    logging:
+      driver: syslog
+      options: { tag: '{{.Name}}/{{.ID}}' }
+  lighthouse_bootnode:
+    container_name: lighthouse_bootnode
+    image: ghcr.io/openethereum/sbc-lighthouse:v2.0.1-sbc
+    command: |
+      lighthouse boot_node
+      --disable-packet-filter
+      --testnet-dir /gbc/config
+      --datadir /home/.eth2/beaconchaindata
+      --port 9000
+      $BOOTNODE_PUBLIC_IP
+    volumes:
+      - /root/gbc/config:/gbc/config
+      - /root/gbc/node_db:/home/.eth2/beaconchaindata
+    network_mode: host
+    logging:
+      driver: syslog
+      options: { tag: '{{.Name}}/{{.ID}}' }
