@@ -3,6 +3,7 @@ services:
   prysm_bootnode:
     container_name: prysm_bootnode
     image: gcr.io/prysmaticlabs/prysm/bootnode@sha256:399f39103fdc389783c48a67d6a5c1ae0ae2f299bfed6265f6cee1502d646716
+    restart: always
     command: |
       --private $BOOTNODE_PRIVATE_KEY
       --fork-version $BOOTNODE_FORK_VERSION
@@ -18,6 +19,7 @@ services:
   lighthouse_bootnode:
     container_name: lighthouse_bootnode
     image: ghcr.io/openethereum/sbc-lighthouse:v2.0.1-sbc
+    restart: always
     command: |
       lighthouse boot_node
       --disable-packet-filter
@@ -26,8 +28,8 @@ services:
       --port 9000
       $BOOTNODE_PUBLIC_IP
     volumes:
-      - /root/gbc/config:/gbc/config
-      - /root/gbc/node_db:/home/.eth2/beaconchaindata
+      - /root/gbc-bootnode/config:/gbc/config
+      - /root/gbc-bootnode/node_db:/home/.eth2/beaconchaindata
     network_mode: host
     logging:
       driver: syslog
