@@ -18,7 +18,7 @@ services:
       options: { tag: '{{.Name}}/{{.ID}}' }
   lighthouse_bootnode:
     container_name: lighthouse_bootnode
-    image: ghcr.io/openethereum/sbc-lighthouse:v2.0.1-sbc
+    image: sigp/lighthouse:v2.1.5-modern
     restart: always
     command: |
       lighthouse boot_node
@@ -28,8 +28,8 @@ services:
       --port 9000
       $BOOTNODE_PUBLIC_IP
     volumes:
-      - /root/gbc-bootnode/config:/gbc/config
-      - /root/gbc-bootnode/node_db:/home/.eth2/beaconchaindata
+      - ./config:/gbc/config
+      - ./node_db:/home/.eth2/beaconchaindata
     network_mode: host
     logging:
       driver: syslog
